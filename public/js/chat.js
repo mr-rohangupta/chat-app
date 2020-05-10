@@ -2,17 +2,19 @@ const socket = io();
 
 //Elements
 const $messageForm = document.querySelector("#message-form");
-const $messageFormInput = $messageForm.querySelector("input");
+const $messageFormInput = $messageForm.querySelector("textarea");
 const $messageFormButton = $messageForm.querySelector("button");
 const $sendLocationButton = document.querySelector("#send-location");
-const $messages = document.querySelector("#messages");
+const $chatMessages = document.querySelector("#chatmessages");
 
 //Templates
-const messageTemplate = document.querySelector("#message-template").innerHTML;
+const adminTemplate = document.querySelector("#admin-template").innerHTML;
+const userTemplate = document.querySelector("#user-template").innerHTML;
 const locationMessageTemplate = document.querySelector(
   "#location-message-template"
 ).innerHTML;
 const sidebarTemplate = document.querySelector("#sidebar-template").innerHTML;
+const roomNameTemplate = document.querySelector("#roomname-template").innerHTML;
 
 //Options
 const { username, room } = Qs.parse(location.search, {
@@ -21,7 +23,7 @@ const { username, room } = Qs.parse(location.search, {
 
 const autoscroll = () => {
   //New message element
-  const $newMessage = $messages.lastElementChild;
+  const $newMessage = $chatMessages.lastElementChild;
 
   //Height of the new message
   const newMessageStyles = getComputedStyle($newMessage);
@@ -29,16 +31,16 @@ const autoscroll = () => {
   const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
 
   //Visible Height
-  const visibleHeight = $messages.offsetHeight;
+  const visibleHeight = $chatMessages.offsetHeight;
 
   //Height of message container
-  const containerHeight = $messages.scrollHeight;
+  const containerHeight = $chatMessages.scrollHeight;
 
   //How far have I scrolled ?
-  const scrollOffset = $messages.scrollTop + visibleHeight;
+  const scrollOffset = $chatMessages.scrollTop + visibleHeight;
 
   if (containerHeight - newMessageHeight <= scrollOffset) {
-    $messages.scrollTop = $messages.scrollHeight;
+    $chatMessages.scrollTop = $chatMessages.scrollHeight;
   }
 };
 //server (emit) -> client (receive) -> acknowledgement -> server
@@ -46,13 +48,23 @@ const autoscroll = () => {
 
 socket.on("message", (message) => {
   console.log(message);
-  const html = Mustache.render(messageTemplate, {
-    username: message.username,
-    message: message.text,
-    createdAt: moment(message.createdAt).format("h:mm a"),
-  });
-  $messages.insertAdjacentHTML("beforeend", html);
-  autoscroll();
+  if (message.username === "admin") {
+    const adminHtml = Mustache.render(adminTemplate, {
+      username: message.username,
+      message: message.text,
+      createdAt: moment(message.createdAt).format("h:mm a"),
+    });
+    $chatMessages.insertAdjacentHTML("beforeend", adminHtml);
+    autoscroll();
+  } else {
+    const userHtml = Mustache.render(userTemplate, {
+      username: message.username,
+      message: message.text,
+      createdAt: moment(message.createdAt).format("h:mm a"),
+    });
+    $chatMessages.insertAdjacentHTML("beforeend", userHtml);
+    autoscroll();
+  }
 });
 
 socket.on("locationMessage", (message) => {
@@ -61,7 +73,7 @@ socket.on("locationMessage", (message) => {
     url: message.url,
     createdAt: moment(message.createdAt).format("h:mm a"),
   });
-  $messages.insertAdjacentHTML("beforeend", html);
+  $chatMessages.insertAdjacentHTML("beforeend", html);
   autoscroll();
 });
 
@@ -70,7 +82,11 @@ socket.on("roomData", ({ room, users }) => {
     room,
     users,
   });
+  const roomNameHtml = Mustache.render(roomNameTemplate, {
+    room,
+  });
   document.querySelector("#sidebar").innerHTML = html;
+  document.querySelector("#roomname").innerHTML = roomNameHtml;
 });
 
 $messageForm.addEventListener("submit", (e) => {
