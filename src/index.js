@@ -94,13 +94,6 @@ io.on("connection", (socket) => {
     );
     callback();
   });
-
-  //socket.on("increment", () => {
-  //count++;
-  //Use io.emit instead of socket.emit as io.emit will pass the event to each and every client
-  //socket.emit("countUpdated", count);
-  //io.emit("countUpdated", count);
-  //});
 });
 
 //Here server is up in port 3000

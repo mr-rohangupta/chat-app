@@ -89,11 +89,11 @@ socket.on("roomData", ({ room, users }) => {
   document.querySelector("#roomname").innerHTML = roomNameHtml;
 });
 
+//Added event listener for submitting form
 $messageForm.addEventListener("submit", (e) => {
   e.preventDefault();
   $messageFormButton.setAttribute("disabled", "disabled");
   const message = e.target.elements.message.value;
-  //sendMessage -> is the event name, message -> Message to send, (message) -> acknowledgement
   socket.emit("sendMessage", message.trim(), (error) => {
     $messageFormButton.removeAttribute("disabled");
     $messageFormInput.value = "";
@@ -103,6 +103,22 @@ $messageForm.addEventListener("submit", (e) => {
     }
     console.log("Message Delivered");
   });
+});
+
+$("#usertext").keypress(function (e) {
+  if (e.which === 13) {
+    $messageFormButton.setAttribute("disabled", "disabled");
+    const message = $("#usertext").val();
+    socket.emit("sendMessage", message.trim(), (error) => {
+      $messageFormButton.removeAttribute("disabled");
+      $messageFormInput.value = "";
+      $messageFormInput.focus();
+      if (error) {
+        return console.log(error);
+      }
+      console.log("Message Delivered");
+    });
+  }
 });
 
 $sendLocationButton.addEventListener("click", () => {

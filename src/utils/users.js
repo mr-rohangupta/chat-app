@@ -1,8 +1,11 @@
 const users = [];
 
 const addUser = ({ id, username, room }) => {
-  username = username.trim().toLowerCase();
-  room = room.trim().toLowerCase();
+  if (username !== undefined && room !== undefined) {
+    console.log("UserName");
+    username = username.trim().toLowerCase();
+    room = room.trim().toLowerCase();
+  }
 
   //Validate the data
   if (!username || !room) {

@@ -73,6 +73,7 @@
                     </span>
                   </div>
                   <textarea
+                    id="usertext"
                     name="message"
                     class="form-control type_msg"
                     placeholder="Type your message..."
@@ -80,7 +81,9 @@
                   ></textarea>
                   <div class="input-group-append">
                     <span class="input-group-text send_btn">
-                      <button class="attach_btn"><i class="fas fa-location-arrow"></i></button>
+                      <button class="attach_btn">
+                        <i class="fas fa-location-arrow"></i>
+                      </button>
                     </span>
                   </div>
                 </div>
@@ -111,7 +114,7 @@
         <div class="msg_cotainer_send">
          <b> {{username}}</b>
           <br>
-          {{message}} 
+          {{message}}
           <span class="msg_time_send">{{createdAt}}</span>
         </div>
         <div class="img_cont_msg">
@@ -122,18 +125,18 @@
 
     <!--Script to render locations-->
     <script id="location-message-template" type="text/html">
-      <div class="d-flex justify-content-end mb-4">
-      <div class="msg_cotainer_send">
-       <b> {{username}}</b>
-        <br>
-        <p><a href="{{url}}" target="_blank">My Current Location</a></p> 
-        <span class="msg_time_send">{{createdAt}}</span>
+        <div class="d-flex justify-content-end mb-4">
+        <div class="msg_cotainer_send">
+         <b> {{username}}</b>
+          <br>
+          <p><a href="{{url}}" target="_blank">My Current Location</a></p>
+          <span class="msg_time_send">{{createdAt}}</span>
+        </div>
+        <div class="img_cont_msg">
+          <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg">
+        </div>
       </div>
-      <div class="img_cont_msg">
-        <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg">
-      </div>
-    </div>
-  </script>
+    </script>
 
     <!--Script to render chat room name-->
     <script id="roomname-template" type="text/html">
